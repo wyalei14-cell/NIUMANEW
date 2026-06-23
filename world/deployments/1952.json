@@ -1,18 +1,19 @@
 {
   "chainId": 1952,
-  "deployer": "0x36f0a9E2b10e2DEaeb08fB702e4B84c3f9F5834a",
+  "deployer": "0xcdDcC6C68E9b432cE8b6Ed8E88D5717a7703f923",
   "contracts": {
-    "CitizenRegistry": "0xa77279811987c36F6191F553bfDf299fdcfa0E57",
-    "GovernanceCore": "0xc899a87c0e366672f04822F7eAC38f7fb63d89b6",
-    "RoleManager": "0xf39138893D688d2f71e0149d90134d8b93771728",
-    "CompanyRegistry": "0x855062Cd28fC15b3f3fC1685E219cd8Ff5a1fE4A",
-    "WorldStateRegistry": "0x164faF0E6252A9f8ac8792b8877e7eC1be7020c6",
-    "Treasury": "0xb66F798df630dCFA8C30D874127dB396c16Fc8b3",
-    "ElectionManager": "0xe90A50348aB4871E034294D85F483459D6C4aC28",
-    "CourseRegistry": "0x3497b5EB86c3326C930D99a526b9BB3D9dA67Aa6",
-    "CredentialRegistry": "0xe1247728d72C423186AC76299611701A17ce35C8",
-    "ReputationSystem": "0xEeBEBF8B1dc87983edde33B396e8f352325E03DD",
-    "CitizenDelegate": "0x92B223029FC57a1156e45BFAD58C57d1CFF8D52D",
-    "ServiceMarketplace": "0xc005D8BF74bFB0f869246Dd0866F5E02912117E5"
+    "CitizenRegistry": "0x5A8bE80F5D0d5E13d30f9CFe02D0D917A5ACe6d0",
+    "GovernanceCore": "0x3D8567827777c22C06F2f87823d2690Ba216b589",
+    "RoleManager": "0xc3069dD2b28f31c36590E3F2e1a88a6b6eB7c61C",
+    "CompanyRegistry": "0xaD7e72776934854Bc15f712a37256dCE95f0341a",
+    "WorldStateRegistry": "0x6bC582ddBEf59bD5E6ae5D01B7607aa986d50034",
+    "Treasury": "0x5fa0d885aeEB1744420cc10ac7eF9a0DDAA64391",
+    "GovernanceExecutor": "0xC677F6BD26c4f12ECFDc4516DC35918793b269c5",
+    "ElectionManager": "0x1b707BFAa30cfCDc12B279016198e916cEBF5Ae1",
+    "ReputationSystem": "0x47FF00eB8f4e8f64C92Cc4064E354AfFD6B4d881",
+    "CourseRegistry": "0x9feB4E5BF4C400f104C500895f4d7553324a9c27",
+    "CredentialRegistry": "0x53A9Aad7Dc3fBe438667A5EB1eEE8197C4Fc0262",
+    "CitizenDelegate": "0xC23B00B1379047CAA40702cD6517e0cdB558069A",
+    "ServiceMarketplace": "0xD818fdF1e06B834a3B6a616e3a02590e62ADD980"
   }
 }

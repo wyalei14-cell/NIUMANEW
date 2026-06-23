@@ -12,3 +12,4 @@ apps/web/.env.local
 contracts/.env
 world/generated
 *.log
+_*.mjs

@@ -11,15 +11,16 @@ async function main() {
   const deploymentPath = path.resolve(process.cwd(), "..", "world", "deployments", `${chainId}.json`);
   const existing = JSON.parse(fs.readFileSync(deploymentPath, "utf8"));
   const citizenRegistry = existing.contracts.CitizenRegistry;
-  const reputationSystem = existing.contracts.ReputationSystem;
   console.log(`CitizenRegistry: ${citizenRegistry}`);
-  console.log(`ReputationSystem: ${reputationSystem}`);
 
-  const ServiceMarketplace = await ethers.getContractFactory("ServiceMarketplace");
-  const marketplace = await ServiceMarketplace.deploy(citizenRegistry, reputationSystem, deployer.address);
-  await marketplace.waitForDeployment();
-  const addr = await marketplace.getAddress();
-  console.log("ServiceMarketplace deployed to:", addr);
+  const ReputationSystem = await ethers.getContractFactory("ReputationSystem");
+  const reputation = await ReputationSystem.deploy(citizenRegistry, deployer.address);
+  await reputation.waitForDeployment();
+  const address = await reputation.getAddress();
+
+  console.log(`ReputationSystem deployed: ${address}`);
+  console.log("\nUpdate world/deployments/1952.json:");
+  console.log(`  "ReputationSystem": "${address}"`);
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+main().catch(console.error);
