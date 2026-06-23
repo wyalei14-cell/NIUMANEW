@@ -141,6 +141,31 @@ export const electionManagerAbi = [
   "function getRound(uint256 roundId) view returns ((uint256 id,uint8 status,uint256 startAt,uint256 endAt,address winner,address[] candidates))"
 ];
 
+export const serviceMarketplaceAbi = [
+  "function postService(string title,string description,string category,uint256 price,uint256 maxDuration) returns (uint256)",
+  "function acceptService(uint256 serviceId) payable",
+  "function completeService(uint256 serviceId)",
+  "function disputeService(uint256 serviceId)",
+  "function resolveDispute(uint256 serviceId,uint8 resolution)",
+  "function cancelService(uint256 serviceId)",
+  "function postReview(uint256 serviceId,uint8 rating,string comment)",
+  "function getService(uint256 serviceId) view returns ((uint256 id,address provider,uint256 providerCitizenId,string title,string description,string category,uint256 price,uint256 maxDuration,uint8 status,address client,uint256 clientCitizenId,uint256 escrowAmount,uint256 acceptedAt,uint256 completedAt,uint256 createdAt,uint256[] reviewIds))",
+  "function getReview(uint256 reviewId) view returns ((uint256 id,uint256 serviceId,address reviewer,uint8 rating,string comment,uint256 createdAt))",
+  "function getMarketplaceStats() view returns (uint256 posted,uint256 completed,uint256 volume,uint256 feeBps)",
+  "function nextServiceId() view returns (uint256)",
+  "function nextReviewId() view returns (uint256)",
+  "function platformFeeBps() view returns (uint256)",
+  "function totalServicesPosted() view returns (uint256)",
+  "function totalServicesCompleted() view returns (uint256)",
+  "function totalVolume() view returns (uint256)",
+  "event ServicePosted(uint256 indexed serviceId,uint256 indexed providerCitizenId,address indexed provider,string title,string category,uint256 price)",
+  "event ServiceAccepted(uint256 indexed serviceId,address indexed client,uint256 clientCitizenId,uint256 escrowAmount)",
+  "event ServiceCompleted(uint256 indexed serviceId)",
+  "event ServiceDisputed(uint256 indexed serviceId,address indexed disputer)",
+  "event ServiceCanceled(uint256 indexed serviceId,address indexed canceller)",
+  "event ReviewPosted(uint256 indexed reviewId,uint256 indexed serviceId,uint8 rating,address reviewer)"
+];
+
 export function createReadProvider(rpcUrl = XLAYER_TESTNET.rpcUrl) {
   return new JsonRpcProvider(rpcUrl);
 }

@@ -55,6 +55,17 @@ const governanceExecutorAbi = [
   "event ExecutionCanceled(uint256 indexed executionId,uint256 indexed proposalId)"
 ];
 
+const marketplaceAbi = [
+  "event ServicePosted(uint256 indexed serviceId,uint256 indexed providerCitizenId,address indexed provider,string title,string category,uint256 price)",
+  "event ServiceAccepted(uint256 indexed serviceId,address indexed client,uint256 clientCitizenId,uint256 escrowAmount)",
+  "event ServiceCompleted(uint256 indexed serviceId)",
+  "event ServiceDisputed(uint256 indexed serviceId,address indexed disputer)",
+  "event ServiceCanceled(uint256 indexed serviceId,address indexed canceller)",
+  "event ReviewPosted(uint256 indexed reviewId,uint256 indexed serviceId,uint8 rating,address reviewer)"
+];
+
+const serviceStatuses = ["Open", "Accepted", "Completed", "Canceled", "Disputed"];
+
 const proposalTypes = ["Feature", "Governance", "District", "Company"];
 const proposalStatuses = ["Draft", "Discussion", "Voting", "Passed", "Rejected", "Executed"];
 
@@ -106,7 +117,8 @@ async function syncChainEventsOnce() {
       { name: "CredentialRegistry", address: deployment.contracts.CredentialRegistry, abi: credentialAbi, mapper: mapCredentialEvent },
       { name: "ReputationSystem", address: deployment.contracts.ReputationSystem, abi: reputationAbi, mapper: mapReputationEvent },
       { name: "CitizenDelegate", address: deployment.contracts.CitizenDelegate, abi: delegateAbi, mapper: mapDelegateEvent },
-      { name: "GovernanceExecutor", address: deployment.contracts.GovernanceExecutor, abi: governanceExecutorAbi, mapper: mapGovernanceExecutorEvent }
+      { name: "GovernanceExecutor", address: deployment.contracts.GovernanceExecutor, abi: governanceExecutorAbi, mapper: mapGovernanceExecutorEvent },
+      { name: "ServiceMarketplace", address: deployment.contracts.ServiceMarketplace, abi: marketplaceAbi, mapper: mapMarketplaceEvent }
     ];
 
     let added = 0;
@@ -472,6 +484,28 @@ function mapGovernanceExecutorEvent(log: any): WorldEvent | undefined {
     };
   }
   return undefined;
+}
+
+function mapMarketplaceEvent(log: any): any | undefined {
+  const event = log.fragment?.name;
+  if (!event) return undefined;
+  const base = { id: chainEventId(log), source: "chain" as const, blockNumber: log.blockNumber, logIndex: log.index };
+  switch (event) {
+    case "ServicePosted":
+      return { ...base, type: "ServicePosted", payload: { serviceId: Number(log.args.serviceId), providerCitizenId: Number(log.args.providerCitizenId), provider: log.args.provider, title: log.args.title, category: log.args.category, price: log.args.price.toString() } };
+    case "ServiceAccepted":
+      return { ...base, type: "ServiceAccepted", payload: { serviceId: Number(log.args.serviceId), client: log.args.client, clientCitizenId: Number(log.args.clientCitizenId), escrowAmount: log.args.escrowAmount.toString() } };
+    case "ServiceCompleted":
+      return { ...base, type: "ServiceCompleted", payload: { serviceId: Number(log.args.serviceId) } };
+    case "ServiceDisputed":
+      return { ...base, type: "ServiceDisputed", payload: { serviceId: Number(log.args.serviceId), disputer: log.args.disputer } };
+    case "ServiceCanceled":
+      return { ...base, type: "ServiceCanceled", payload: { serviceId: Number(log.args.serviceId), canceller: log.args.canceller } };
+    case "ReviewPosted":
+      return { ...base, type: "ReviewPosted", payload: { reviewId: Number(log.args.reviewId), serviceId: Number(log.args.serviceId), rating: Number(log.args.rating), reviewer: log.args.reviewer } };
+    default:
+      return undefined;
+  }
 }
 
 function chainEventId(log: any) {

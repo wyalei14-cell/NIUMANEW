@@ -147,6 +147,55 @@ app.get("/api/delegations", (_req, res) => {
   res.json({ delegations: Object.values(world.state.delegations) });
 });
 
+app.get("/api/marketplace", async (_req, res) => {
+  try {
+    const deployment = readDeployment();
+    if (!deployment?.contracts.ServiceMarketplace) {
+      return res.json({ services: [], reviews: [], stats: { posted: 0, completed: 0, volume: "0", feeBps: 0 } });
+    }
+    const { Contract, JsonRpcProvider } = await import("ethers");
+    const rpcUrl = process.env.XLAYER_TESTNET_RPC || "https://testrpc.xlayer.tech/terigon";
+    const provider = new JsonRpcProvider(rpcUrl);
+    const marketplaceAbi = [
+      "function getService(uint256 serviceId) view returns (tuple(uint256 id,address provider,uint256 providerCitizenId,string title,string description,string category,uint256 price,uint256 maxDuration,uint8 status,address client,uint256 clientCitizenId,uint256 escrowAmount,uint256 acceptedAt,uint256 completedAt,uint256 createdAt,uint256[] reviewIds))",
+      "function getMarketplaceStats() view returns (uint256,uint256,uint256,uint256)",
+      "function nextServiceId() view returns (uint256)"
+    ];
+    const contract = new Contract(deployment.contracts.ServiceMarketplace, marketplaceAbi, provider);
+    const statsRaw = await contract.getMarketplaceStats();
+    const nextId = await contract.nextServiceId();
+    const serviceStatuses = ["Open", "Accepted", "Completed", "Canceled", "Disputed"];
+    const services = [];
+    const limit = Math.min(Number(nextId), 50);
+    for (let i = 1; i < limit; i++) {
+      try {
+        const svc = await contract.getService(i);
+        if (svc.id > 0n) {
+          services.push({
+            serviceId: Number(svc.id),
+            provider: svc.provider,
+            providerCitizenId: Number(svc.providerCitizenId),
+            title: svc.title,
+            description: svc.description,
+            category: svc.category,
+            price: svc.price.toString(),
+            status: serviceStatuses[Number(svc.status)] || "Unknown",
+            client: svc.client,
+            createdAt: Number(svc.createdAt),
+            reviewCount: svc.reviewIds.length
+          });
+        }
+      } catch { /* service not found */ }
+    }
+    res.json({
+      services,
+      stats: { posted: Number(statsRaw[0]), completed: Number(statsRaw[1]), volume: statsRaw[2].toString(), feeBps: Number(statsRaw[3]) }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error instanceof Error ? error.message : "marketplace fetch failed" });
+  }
+});
+
 app.get("/api/world/versions", (_req, res) => {
   res.json([currentWorld().manifest]);
 });

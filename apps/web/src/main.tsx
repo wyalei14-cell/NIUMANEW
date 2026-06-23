@@ -31,12 +31,13 @@ import {
   credentialRegistryAbi,
   electionManagerAbi,
   governanceCoreAbi,
+  serviceMarketplaceAbi,
   switchToXLayer,
   worldStateRegistryAbi
 } from "@niuma/sdk";
 import "./styles.css";
 
-type View = "plaza" | "join" | "city-hall" | "dev-center" | "company" | "academy" | "archive";
+type View = "plaza" | "join" | "city-hall" | "dev-center" | "company" | "academy" | "marketplace" | "archive";
 type Proposal = {
   proposalId: number;
   title: string;
@@ -105,6 +106,21 @@ type ProposalTimelineEntry = {
   payload: Record<string, unknown>;
   phase: string;
 };
+type MarketplaceService = {
+  serviceId: number;
+  provider: string;
+  providerCitizenId: number;
+  title: string;
+  description: string;
+  category: string;
+  price: string;
+  status: string;
+  client: string;
+  createdAt: number;
+  reviewCount: number;
+};
+type MarketplaceStats = { posted: number; completed: number; volume: string; feeBps: number };
+
 type ProposalChecklistItem = {
   id: string;
   label: string;
@@ -122,7 +138,8 @@ const addresses = {
   world: import.meta.env.VITE_WORLD_STATE_REGISTRY || "",
   election: import.meta.env.VITE_ELECTION_MANAGER || "",
   course: import.meta.env.VITE_COURSE_REGISTRY || "",
-  credential: import.meta.env.VITE_CREDENTIAL_REGISTRY || ""
+  credential: import.meta.env.VITE_CREDENTIAL_REGISTRY || "",
+  marketplace: import.meta.env.VITE_SERVICE_MARKETPLACE || ""
 };
 
 function App() {
@@ -142,7 +159,8 @@ function App() {
   const [citizenProfile, setCitizenProfile] = useState<CitizenProfile | null>(null);
   const [selectedProposalId, setSelectedProposalId] = useState<number | null>(null);
   const [proposalTimeline, setProposalTimeline] = useState<ProposalTimelineEntry[]>([]);
-  const [proposalChecklist, setProposalChecklist] = useState<ProposalChecklistItem[]>([]);
+  const [selectedProposalChecklist, setProposalChecklist] = useState<ProposalChecklistItem[]>([]);
+  const [marketplace, setMarketplace] = useState<{ services: MarketplaceService[]; stats: MarketplaceStats }>({ services: [], stats: { posted: 0, completed: 0, volume: "0", feeBps: 0 } });
   const [notice, setNotice] = useState("Live node synced from X Layer Testnet events.");
   const contractsReady = Object.values(addresses).some(Boolean);
 
@@ -168,6 +186,7 @@ function App() {
     ["dev-center", "Dev Center", GitPullRequest],
     ["company", "Company District", Building2],
     ["academy", "Academy", GraduationCap],
+    ["marketplace", "Marketplace", Building2],
     ["archive", "Archive", FileArchive]
   ] as const;
 
@@ -190,7 +209,9 @@ function App() {
     setBootstrap(bootstrapRes);
     setAcademyCourses(academyRes.courses || []);
     setAcademyCredentials(academyRes.credentials || []);
-    setPresence(presenceRes);
+      setPresence(presenceRes);
+    const marketplaceRes = await fetch(`${apiBase}/api/marketplace`).then((r) => r.json()).catch(() => ({ services: [], stats: { posted: 0, completed: 0, volume: "0", feeBps: 0 } }));
+    setMarketplace(marketplaceRes);
     if (wallet) await fetchCitizenProfile(wallet);
   }
 
@@ -247,7 +268,7 @@ function App() {
     setNotice("Wallet connected.");
   }
 
-  async function runTx(kind: "register" | "proposal" | "vote" | "company" | "nominate" | "world" | "course") {
+  async function runTx(kind: "register" | "proposal" | "vote" | "company" | "nominate" | "world" | "course" | "post-service", extraData?: string) {
     if (!wallet) await connectWallet();
     const provider = new BrowserProvider((window as unknown as { ethereum: Eip1193Provider }).ethereum);
     const signer = await provider.getSigner();
@@ -294,6 +315,12 @@ function App() {
         const contract = new Contract(addresses.course, courseRegistryAbi, signer);
         const tx = await contract.proposeCourse("New Course", `ipfs://course/${Date.now()}`, 0);
         setNotice(`Course proposal sent: ${tx.hash}`);
+      }
+      if (kind === "post-service") {
+        assertAddress(addresses.marketplace, "ServiceMarketplace");
+        const contract = new Contract(addresses.marketplace, serviceMarketplaceAbi, signer);
+        const tx = await contract.postService(extraData || "New Service", "Service description", "general", 0, 86400);
+        setNotice(`Service posted: ${tx.hash}`);
       }
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Transaction failed.");
@@ -562,6 +589,46 @@ function App() {
           </section>
         )}
 
+        {view === "marketplace" && (
+          <section className="operations">
+            <ActionPanel
+              icon={<Building2 />}
+              title="Service Marketplace"
+              meta={`${marketplace.stats.posted} services · ${marketplace.stats.completed} completed · ${marketplace.stats.feeBps / 100}% fee`}
+              actions={[["Post Service", () => { const t = prompt("Service title:"); if (!t || !wallet) return; runTx("post-service", t); }]]}
+            />
+            <div className="academy-section">
+              <h3>Open services</h3>
+              {marketplace.services.filter(s => s.status === "Open").length === 0 && <p className="empty">No open services.</p>}
+              <div className="table">
+                {marketplace.services.filter(s => s.status === "Open").map((service) => (
+                  <div className="table-row" key={service.serviceId}>
+                    <span className="course-id">S-{String(service.serviceId).padStart(3, "0")}</span>
+                    <strong>{service.title}</strong>
+                    <span className="difficulty d0">{service.category}</span>
+                    <span>{service.price === "0" ? "Free" : `${Number(service.price) / 1e18} OKB`}</span>
+                    <small>{short(service.provider)}</small>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="academy-section">
+              <h3>All services</h3>
+              <div className="table">
+                {marketplace.services.map((service) => (
+                  <div className="table-row" key={service.serviceId}>
+                    <span className="course-id">S-{String(service.serviceId).padStart(3, "0")}</span>
+                    <strong>{service.title}</strong>
+                    <span className={`course-status ${service.status.toLowerCase()}`}>{service.status}</span>
+                    <span>{service.price === "0" ? "Free" : `${Number(service.price) / 1e18} OKB`}</span>
+                    <small>C#{service.providerCitizenId}</small>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {view === "archive" && (
           <section className="archive">
             <div>
@@ -731,6 +798,7 @@ function viewTitle(view: View) {
     "dev-center": "Dev Center",
     company: "Company District",
     academy: "Academy",
+    marketplace: "Marketplace",
     archive: "Archive"
   }[view];
 }
