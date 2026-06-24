@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NIUMA Task - 首页</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主内容 / Skip</a>
+<header class="topbar">
+  <div class="topbar-left"><div class="brand">NIUMA TASK</div></div>
+  <nav aria-label="主导航"><ul class="nav-list">
+    <li><a class="active" href="./index.html">首页</a></li>
+    <li><a href="./publish.html">发布任务</a></li>
+    <li><a href="./tasks.html">我的任务</a></li>
+    <li><a href="./messages.html">消息</a></li>
+    <li><a href="./profile.html">个人中心</a></li>
+  </ul></nav>
+  <div class="topbar-right">
+    <button id="langToggle" class="btn btn-secondary">EN</button>
+    <button id="walletBtn" class="btn btn-primary">连接钱包 / Connect Wallet</button>
+  </div>
+</header>
+<main id="main">
+  <section class="panel hero">
+    <h1>让链上任务发布与协作更可信、更高效</h1>
+    <p>发布赏金、领取任务、链上结算，全流程可追踪。Publish bounties, claim tasks, and settle on-chain.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="./publish.html">立即发布任务</a>
+      <a class="btn btn-secondary" href="./tasks.html">浏览任务</a>
+      <a class="btn btn-text" href="./messages.html">新手教程</a>
+    </div>
+    <div class="trust-row"><span>链上透明</span><span>安全提示</span><span>争议处理</span></div>
+  </section>
+
+  <section class="panel">
+    <h2 class="page-title">热门任务 / Featured Tasks</h2>
+    <div class="grid-3">
+      <select><option>全部状态</option><option>进行中</option><option>待签名</option></select>
+      <select><option>最新发布</option><option>奖励最高</option></select>
+      <input class="input" placeholder="搜索任务标题" />
+    </div>
+    <div class="task-grid" style="margin-top:12px;">
+      <article class="task-card">
+        <header><h3>Landing Page UI 优化</h3><span class="badge badge-running">进行中</span></header>
+        <p class="meta">奖励 320 USDT · 截止 2026-04-21</p>
+        <div class="card-actions"><button class="btn btn-primary">立即领取</button><button class="btn btn-secondary">详情</button></div>
+      </article>
+      <article class="task-card">
+        <header><h3>合约事件监听改造</h3><span class="badge badge-warning">待签名</span></header>
+        <p class="meta">奖励 560 USDT · 截止 2026-04-18</p>
+        <div class="card-actions"><button class="btn btn-primary">继续流程</button><button class="btn btn-secondary">详情</button></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<dialog id="walletDialog" aria-labelledby="walletTitle">
+  <h3 id="walletTitle">钱包连接状态</h3>
+  <ol id="walletStateList" class="state-list">
+    <li data-state="idle" class="active">未连接：请选择钱包</li>
+    <li data-state="connecting">连接中：请在钱包中确认连接</li>
+    <li data-state="signing">待签名：请确认签名请求</li>
+    <li data-state="broadcast">上链中：交易已发送，等待确认</li>
+    <li data-state="success">成功：交易已确认</li>
+    <li data-state="error">失败：网络异常，请重试</li>
+  </ol>
+  <div class="dialog-actions">
+    <button id="confirmConnect" class="btn btn-primary">一键演示完整流程</button>
+    <button id="nextState" class="btn btn-secondary">下一状态</button>
+    <button id="closeDialog" class="btn btn-secondary">关闭</button>
+  </div>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="./app.js"></script>
+</body>
+</html>

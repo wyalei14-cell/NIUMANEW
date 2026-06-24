@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>发布任务</title><link rel="stylesheet" href="./styles.css" /></head>
+<body>
+<header class="topbar"><div class="brand">NIUMA TASK</div><nav><ul class="nav-list"><li><a href="./index.html">首页</a></li><li><a class="active" href="./publish.html">发布任务</a></li><li><a href="./tasks.html">我的任务</a></li></ul></nav><div class="topbar-right"><button id="langToggle" class="btn btn-secondary">EN</button><button id="walletBtn" class="btn btn-primary">连接钱包 / Connect Wallet</button></div></header>
+<main>
+  <section class="panel">
+    <h1 class="page-title">发布任务（4 步）</h1>
+    <p class="subtitle">减少一次性表单压力，按步骤完成链上发布。</p>
+    <form id="publishForm">
+      <div data-step="1">
+        <div class="field"><label>任务标题</label><input class="input" required placeholder="例如：优化钱包连接流程" /></div>
+        <div class="field"><label>任务描述</label><textarea required placeholder="明确交付标准、验收口径"></textarea></div>
+        <button type="button" data-next class="btn btn-primary">下一步</button>
+      </div>
+      <div data-step="2" style="display:none">
+        <div class="grid-2">
+          <div class="field"><label>奖励金额 (USDT)</label><input class="input" type="number" min="1" required /></div>
+          <div class="field"><label>截止日期</label><input class="input" type="date" required /></div>
+        </div>
+        <p class="help">系统将展示预估 Gas，提交前二次确认。</p>
+        <button type="button" data-prev class="btn btn-secondary">上一步</button>
+        <button type="button" data-next class="btn btn-primary">下一步</button>
+      </div>
+      <div data-step="3" style="display:none">
+        <div class="field"><label>验收标准</label><textarea required placeholder="列出可量化验收条件"></textarea></div>
+        <div class="status-box">预览卡片：标题、奖励、截止、验收标准将实时显示。</div>
+        <button type="button" data-prev class="btn btn-secondary">上一步</button>
+        <button type="button" data-next class="btn btn-primary">下一步</button>
+      </div>
+      <div data-step="4" style="display:none">
+        <div class="status-box">确认后将发起链上交易。状态：待签名 → 广播中 → 已确认。</div>
+        <button type="button" data-prev class="btn btn-secondary">上一步</button>
+        <button type="submit" class="btn btn-primary">提交并上链</button>
+      </div>
+    </form>
+  </section>
+</main>
+<dialog id="walletDialog"><h3>钱包连接状态</h3><ol id="walletStateList" class="state-list"><li data-state="idle" class="active">未连接</li><li data-state="connecting">连接中</li><li data-state="signing">待签名</li><li data-state="broadcast">上链中</li><li data-state="success">成功</li><li data-state="error">失败</li></ol><div class="dialog-actions"><button id="confirmConnect" class="btn btn-primary">演示流程</button><button id="nextState" class="btn btn-secondary">下一状态</button><button id="closeDialog" class="btn btn-secondary">关闭</button></div></dialog>
+<div id="toast" class="toast"></div>
+<script src="./app.js"></script>
+</body>
+</html>

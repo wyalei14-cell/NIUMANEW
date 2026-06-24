@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>消息中心</title><link rel="stylesheet" href="./styles.css"/></head>
+<body>
+<header class="topbar"><div class="brand">NIUMA TASK</div><nav><ul class="nav-list"><li><a href="./index.html">首页</a></li><li><a href="./tasks.html">我的任务</a></li><li><a class="active" href="./messages.html">消息</a></li></ul></nav><div class="topbar-right"><button id="langToggle" class="btn btn-secondary">EN</button><button id="walletBtn" class="btn btn-primary">连接钱包 / Connect Wallet</button></div></header>
+<main>
+<section class="panel"><h1 class="page-title">消息中心</h1><p class="subtitle">按任务分组展示沟通与系统通知，避免关键链上事件被淹没。</p>
+<div class="grid-2">
+  <div class="list">
+    <article class="list-item"><header><strong>任务：合约事件监听改造</strong><span class="badge badge-info">系统</span></header><p class="meta">交易已广播，等待区块确认。</p><div class="card-actions"><button class="btn btn-secondary">查看交易</button></div></article>
+    <article class="list-item"><header><strong>任务：落地页多语言优化</strong><span class="badge badge-running">会话</span></header><p class="meta">对方提交了新版本，请验收。</p><div class="card-actions"><button class="btn btn-primary">去验收</button></div></article>
+  </div>
+  <div class="empty">暂无更多消息。建议开启“临期提醒”和“交易状态提醒”。</div>
+</div></section>
+</main>
+<dialog id="walletDialog"><h3>钱包连接状态</h3><ol id="walletStateList" class="state-list"><li data-state="idle" class="active">未连接</li><li data-state="connecting">连接中</li><li data-state="signing">待签名</li><li data-state="broadcast">上链中</li><li data-state="success">成功</li><li data-state="error">失败</li></ol><div class="dialog-actions"><button id="confirmConnect" class="btn btn-primary">演示流程</button><button id="nextState" class="btn btn-secondary">下一状态</button><button id="closeDialog" class="btn btn-secondary">关闭</button></div></dialog>
+<div id="toast" class="toast"></div>
+<script src="./app.js"></script>
+</body></html>

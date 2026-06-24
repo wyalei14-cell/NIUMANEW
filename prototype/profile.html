@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>个人中心</title><link rel="stylesheet" href="./styles.css"/></head>
+<body>
+<header class="topbar"><div class="brand">NIUMA TASK</div><nav><ul class="nav-list"><li><a href="./index.html">首页</a></li><li><a href="./tasks.html">我的任务</a></li><li><a class="active" href="./profile.html">个人中心</a></li></ul></nav><div class="topbar-right"><button id="langToggle" class="btn btn-secondary">EN</button><button id="walletBtn" class="btn btn-primary">连接钱包 / Connect Wallet</button></div></header>
+<main>
+<section class="panel"><h1 class="page-title">个人中心</h1><div class="grid-3"><div class="status-box"><strong>完成率</strong><p>92%</p></div><div class="status-box"><strong>准时率</strong><p>89%</p></div><div class="status-box"><strong>争议率</strong><p>3.1%</p></div></div></section>
+<section class="panel"><h2 class="page-title">安全中心</h2><div class="list"><div class="list-item"><header><strong>会话管理</strong><span class="badge badge-info">建议</span></header><p class="meta">最近登录设备：Chrome / macOS</p><button class="btn btn-secondary">管理设备</button></div><div class="list-item"><header><strong>授权检查</strong><span class="badge badge-warning">重要</span></header><p class="meta">建议每周检查授权额度。</p><button class="btn btn-danger">前往检查</button></div></div></section>
+</main>
+<dialog id="walletDialog"><h3>钱包连接状态</h3><ol id="walletStateList" class="state-list"><li data-state="idle" class="active">未连接</li><li data-state="connecting">连接中</li><li data-state="signing">待签名</li><li data-state="broadcast">上链中</li><li data-state="success">成功</li><li data-state="error">失败</li></ol><div class="dialog-actions"><button id="confirmConnect" class="btn btn-primary">演示流程</button><button id="nextState" class="btn btn-secondary">下一状态</button><button id="closeDialog" class="btn btn-secondary">关闭</button></div></dialog>
+<div id="toast" class="toast"></div>
+<script src="./app.js"></script>
+</body></html>

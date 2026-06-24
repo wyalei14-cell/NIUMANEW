@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>我的任务</title><link rel="stylesheet" href="./styles.css"/></head>
+<body>
+<header class="topbar"><div class="brand">NIUMA TASK</div><nav><ul class="nav-list"><li><a href="./index.html">首页</a></li><li><a href="./publish.html">发布任务</a></li><li><a class="active" href="./tasks.html">我的任务</a></li></ul></nav><div class="topbar-right"><button id="langToggle" class="btn btn-secondary">EN</button><button id="walletBtn" class="btn btn-primary">连接钱包 / Connect Wallet</button></div></header>
+<main>
+<section class="panel">
+  <h1 class="page-title">我的任务</h1>
+  <div class="tabs"><button class="tab active">我发布的</button><button class="tab">我参与的</button></div>
+  <div class="grid-3"><select><option>全部状态</option><option>待验收</option><option>争议中</option></select><select><option>最近更新时间</option><option>奖励金额</option></select><input class="input" placeholder="搜索任务"/></div>
+  <div class="list" style="margin-top:12px;">
+    <article class="list-item"><header><strong>钱包连接交互优化</strong><span class="badge badge-warning">待验收</span></header><p class="meta">截止 2026-04-14 · 奖励 420 USDT</p><div class="card-actions"><button class="btn btn-primary">去验收</button><button class="btn btn-secondary">发消息</button></div></article>
+    <article class="list-item"><header><strong>多语言排版修复</strong><span class="badge badge-danger">争议中</span></header><p class="meta">截止 2026-04-12 · 奖励 210 USDT</p><div class="card-actions"><button class="btn btn-secondary">查看争议</button></div></article>
+  </div>
+</section>
+</main>
+<dialog id="walletDialog"><h3>钱包连接状态</h3><ol id="walletStateList" class="state-list"><li data-state="idle" class="active">未连接</li><li data-state="connecting">连接中</li><li data-state="signing">待签名</li><li data-state="broadcast">上链中</li><li data-state="success">成功</li><li data-state="error">失败</li></ol><div class="dialog-actions"><button id="confirmConnect" class="btn btn-primary">演示流程</button><button id="nextState" class="btn btn-secondary">下一状态</button><button id="closeDialog" class="btn btn-secondary">关闭</button></div></dialog>
+<div id="toast" class="toast"></div>
+<script src="./app.js"></script>
+</body></html>
